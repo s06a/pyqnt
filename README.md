@@ -7,11 +7,11 @@ Quant is a simple tool to create optimal portfolios based on historical data fro
 - Generate a report with the portfolio summary and performance metrics (not yet)
 
 # Installation
-'''bash
+```bash
 git clone https://github.com/s06a/quant.git
 cd quant
 pip3 install .
-'''
+```
 
 # Examples
 ```python
