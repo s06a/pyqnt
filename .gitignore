@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# data
+tickers_data
+
+# test files
+test.py
+
 # C extensions
 *.so
 
