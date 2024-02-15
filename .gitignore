@@ -7,7 +7,8 @@ __pycache__/
 tickers_data
 
 # test files
-test.py
+test*.py
+test*.ipynb
 
 # C extensions
 *.so
