@@ -17,7 +17,7 @@ setup(
     packages=["quant"],
     license="MIT Licence",
     version='0.1.0',
-    url="https://github.com/s06a/qamo",
+    url="https://github.com/s06a/quant",
     description=DESCRIPTION,
     python_requires=REQUIRES_PYTHON,
     install_requires=REQUIRED,
