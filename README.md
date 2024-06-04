@@ -18,7 +18,7 @@ pip3 install .
 import quant as qn
 
 symbols = {
-    "market": ["first_ticker", "second_ticker"],
+    "tsetmc": ["وبصادر", "فولاد"],
 }
 
 df = qn.data.history(symbols)
