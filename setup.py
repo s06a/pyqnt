@@ -1,25 +1,26 @@
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
 
-NAME = "quant"
-DESCRIPTION = "Market data, quantitative analysis, and portfolio management tools for quants"
-REQUIRES_PYTHON = ">=3.5.0"
-
-REQUIRED = [
-    "numpy>=1.24.0",
-    "pandas>=2.0.0",
-    "scipy>=1.8.0",
-    "requests>=2.18.0",
-    "pytse-client>=0.18.0",
-]
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
 
 setup(
-    name=NAME,
-    packages=["quant"],
-    license="MIT Licence",
+    name='piquant',
     version='0.1.0',
-    url="https://github.com/s06a/quant",
-    description=DESCRIPTION,
-    python_requires=REQUIRES_PYTHON,
-    install_requires=REQUIRED,
+    description='A comprehensive toolkit for quantitative finance and analysis',
     author='s06a',
+    url='https://github.com/s06a/piquant',
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
+    install_requires=requirements,
+    entry_points={
+        'console_scripts': [
+            'piquant-cli=cli.main:main',
+        ]
+    },
+    classifiers=[
+        'Programming Language :: Python :: 3.8',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+    ],
+    python_requires='>=3.8',
 )
