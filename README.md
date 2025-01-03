@@ -51,6 +51,10 @@ portfolio = pq.quant.portfolio(df, risk_free_rate=0.2, method='gmv')
 print(portfolio)
 ```
 
+## **Fix the Persian Character Display in Terminal**
+
+Change the terminal's font to DejaVu Sans Mono, which supports Persian script.
+
 ## **Acknowledgments**
 
 PiQuant is a work in progress—an experiment, a learning journey, and a tool to improve financial decision-making. The future is uncertain, but this project begins with curiosity, hope, and determination.
