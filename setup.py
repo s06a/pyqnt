@@ -14,7 +14,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'piquant-cli=cli.main:main',
+            'piquant=cli.main:piquant',
         ]
     },
     classifiers=[
