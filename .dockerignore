@@ -1,0 +1,22 @@
+# Ignore all dotfiles
+.*
+
+# Allow specific hidden files if needed
+!.dockerignore
+
+# Exclude build and temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.swp
+*.swo
+
+# Exclude version control directories
+.git/
+.gitignore
+
+# Exclude Python virtual environments
+.venv/
+env/
