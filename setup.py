@@ -1,26 +1,32 @@
 from setuptools import setup, find_packages
 
 with open("requirements.txt") as f:
-    requirements = f.read().splitlines()
+    all_requirements = f.read().splitlines()
+
+# Split dependencies: CLI requires only minimal dependencies
+cli_requirements = ["click", "requests", "pyyaml"]
 
 setup(
-    name='piquant',
-    version='0.1.0',
-    description='A comprehensive toolkit for quantitative finance and analysis',
-    author='s06a',
-    url='https://github.com/s06a/piquant',
-    packages=find_packages(where='src'),
-    package_dir={'': 'src'},
-    install_requires=requirements,
+    name="piquant",
+    version="0.1.0",
+    description="A CLI tool and API for portfolio optimization",
+    author="s06a",
+    url="https://github.com/s06a/piquant",
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
+    install_requires=cli_requirements,  # Only install CLI dependencies globally
+    extras_require={
+        "full": all_requirements  # Allows optional full installation for API/backend
+    },
     entry_points={
-        'console_scripts': [
-            'piquant=cli.main:piquant',
+        "console_scripts": [
+            "piquant=cli.main:piquant",
         ]
     },
     classifiers=[
-        'Programming Language :: Python :: 3.8',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        "Programming Language :: Python :: 3.8",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
-    python_requires='>=3.8',
+    python_requires=">=3.8",
 )
