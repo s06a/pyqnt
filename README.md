@@ -27,28 +27,26 @@ To install PiQuant, clone the repository and install the package using `pip`:
 ```bash
 git clone https://github.com/s06a/piquant.git
 cd piquant
-pip3 install .
+docker-compose up --build -d # to install and run backend and api on localhost:8000
+pip install --user . # to install cli app
 ```
 
 
 ## **Usage Examples**
 
-```python
-import piquant as pq
+create a portfolio yaml file (portfolio.yml)
+```yml
+tsetmc:
+  - "وبصادر"
+  - "فولاد"
+  - "طلا"
+  - "عیار"
+  - "کساپا"
+```
 
-# Define the symbols for data retrieval
-symbols = {
-    "tsetmc": ["وبصادر", "فولاد"],  # Example market symbols
-}
-
-# Retrieve historical market data
-df = pq.data.history(symbols)
-
-# Optimize portfolio weights using the GMV method
-portfolio = pq.quant.portfolio(df, risk_free_rate=0.2, method='gmv')
-
-# Print the optimized portfolio details
-print(portfolio)
+run the cli app
+```bash
+piquant optimize --file portfolio.yml --method gmv
 ```
 
 ## **Fix the Persian Character Display in Terminal**
