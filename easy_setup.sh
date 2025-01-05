@@ -72,7 +72,7 @@ install_piquant() {
                 source piquant_env/bin/activate
             fi
             if ! pip install .; then
-                echo "Failed to install PiQuant in the virtual environment."
+                echo " Failed to install PiQuant in the virtual environment."
                 exit 1
             fi
             deactivate
@@ -85,21 +85,39 @@ install_piquant() {
     esac
 }
 
-# Function to rebuild the Docker image
-rebuild_image() {
-    echo "Rebuilding the Docker image..."
-    # Check if the image exists and get its ID using grep and awk
-    image_id=$(sudo docker images | grep "piquant" | awk '{print $3}')
+# Function to remove a Docker image by name
+remove_docker_image() {
+    local image_name="$1"
+    
+    # Check if any containers are using the image and get the first one
+    container_id=$(sudo docker ps | grep "$image_name" | awk '{print $1}' | head -n 1)
+
+    if [ -n "$container_id" ]; then
+        echo "Stopping running container using the image '$image_name' with ID: $container_id..."
+        sudo docker stop "$container_id"
+    fi
+
+    # Now remove the image
+    image_id=$(sudo docker images | grep "$image_name" | awk '{print $3}' | head -n 1)
 
     if [ -n "$image_id" ]; then
-        echo "Removing the existing Docker image with ID: $image_id..."
+        echo "Removing the Docker image with ID: $image_id..."
         if ! sudo docker rmi "$image_id"; then
-            echo "Failed to remove the existing Docker image."
+            echo "Failed to remove the Docker image."
             exit 1
         fi
+        echo "Docker image removed successfully."
     else
-        echo "No existing Docker image found to remove."
+        echo "No Docker image found with the name '$image_name' to remove."
     fi
+}
+
+# Function to rebuild the Docker image and reinstall PiQuant
+rebuild_and_reinstall() {
+    echo "Rebuilding the Docker image and reinstalling PiQuant..."
+    
+    # Remove the existing Docker image
+    remove_docker_image "piquant"
 
     echo "Building the new Docker image..."
     if ! sudo docker-compose up --build -d; then
@@ -107,15 +125,48 @@ rebuild_image() {
         exit 1
     fi
     echo "Docker image rebuilt successfully."
+
+    # Now install PiQuant
+    install_piquant
+}
+
+# Function to remove PiQuant and its Docker image
+remove_piquant() {
+    echo "Removing PiQuant and its Docker image..."
+
+    # Check if PiQuant is installed and remove it
+    if command -v piquant &> /dev/null; then
+        echo "PiQuant is installed. Removing..."
+        if pip show piquant &> /dev/null; then
+            # Check if installed globally
+            pip uninstall -y piquant
+        elif pip show --user piquant &> /dev/null; then
+            # Check if installed for the current user
+            pip uninstall --user -y piquant
+        elif [ -d "piquant_env" ]; then
+            # Check if installed in a virtual environment
+            echo "Activating virtual environment 'piquant_env' to remove PiQuant..."
+            source piquant_env/bin/activate
+            pip uninstall -y piquant
+            deactivate
+            echo "Virtual environment 'piquant_env' will not be removed."
+        fi
+        echo "PiQuant removed successfully."
+    else
+        echo "PiQuant is not installed."
+    fi
+
+    # Remove the Docker image
+    remove_docker_image "piquant"
 }
 
 # Function to prompt user for action
 prompt_user() {
     echo "What would you like to do?"
-    echo "1. Check Docker status and run container (Backend)"
-    echo "2. Check and install PiQuant (Just CLI app)"
-    echo "3. Rebuild and reinstall PiQuant (Backend and CLI app)"
-    echo "4. Rebuild Docker image (Backend)"
+    echo "1. Check Docker status and run container"
+    echo "2. Check and install PiQuant"
+    echo "3. Rebuild Docker image and reinstall PiQuant"
+    echo "4. Remove PiQuant and its Docker image completely"
     echo "5. Exit"
     read -p "Choose an option [1-5]: " option
 
@@ -131,14 +182,11 @@ prompt_user() {
             fi
             ;;
         3)
-            echo "Rebuilding and reinstalling PiQuant..."
-            sudo docker-compose down
-            sudo docker-compose up --build -d
-            install_piquant
+            rebuild_and_reinstall
             ;;
         4)
-            rebuild_image
- ;;
+            remove_piquant
+            ;;
         5)
             echo "Exiting the script."
             exit 0
