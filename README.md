@@ -22,12 +22,6 @@ PiQuant embraces the uncertainty of markets, focusing on the journey of explorat
 
 ## **Installation**
 
-Easy way to install PiQuant:
-```bash
-chmod +x easy_setup.sh
-./easy_setup.sh # follow the options
-```
-
 Hard way to install PiQuant, clone the repository and install the package using `pip`:
 ```bash
 git clone https://github.com/s06a/piquant.git
@@ -35,8 +29,6 @@ cd piquant
 docker-compose up --build -d # to install and run backend and api on localhost:8000
 pip install --user . # to install cli app
 ```
-
-
 
 ## **Usage Examples**
 
