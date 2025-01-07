@@ -8,7 +8,7 @@ cli_requirements = ["click", "requests", "pyyaml"]
 
 setup(
     name="pyqnt",
-    version="0.1.0",
+    version="0.0.1a",
     description="A CLI tool and API for portfolio optimization",
     author="s06a",
     url="https://github.com/s06a/pyqnt",
