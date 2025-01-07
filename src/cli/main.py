@@ -6,11 +6,11 @@ import os
 API_URL = "http://127.0.0.1:8000/portfolio"
 
 @click.group()
-def piquant():
-    """Piquant CLI for portfolio optimization."""
+def pyqnt():
+    """pyqnt CLI for portfolio optimization."""
     pass
 
-@piquant.command()
+@pyqnt.command()
 @click.option('--file', type=click.Path(exists=True), required=True, help="Path to the YAML file containing stock symbols.")
 @click.option('--method', type=click.Choice(['gmv', 'msr']), default='gmv', help="Optimization method: 'gmv' (Global Minimum Variance) or 'msr' (Maximum Sharpe Ratio)")
 @click.option('--risk-free-rate', default=0.2, help="Annual risk-free rate (default: 0.2)")
@@ -57,4 +57,4 @@ def optimize(file, method, risk_free_rate, budget):
         click.echo(f"Error: Unable to connect to API. {e}", err=True)
 
 if __name__ == "__main__":
-    piquant()
+    pyqnt()

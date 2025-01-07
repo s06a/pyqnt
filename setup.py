@@ -7,11 +7,11 @@ with open("requirements.txt") as f:
 cli_requirements = ["click", "requests", "pyyaml"]
 
 setup(
-    name="piquant",
+    name="pyqnt",
     version="0.1.0",
     description="A CLI tool and API for portfolio optimization",
     author="s06a",
-    url="https://github.com/s06a/piquant",
+    url="https://github.com/s06a/pyqnt",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=cli_requirements,  # Only install CLI dependencies globally
@@ -20,7 +20,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "piquant=cli.main:piquant",
+            "pyqnt=cli.main:pyqnt",
         ]
     },
     classifiers=[

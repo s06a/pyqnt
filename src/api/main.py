@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from piquant.quant import portfolio
-from piquant.data import history
+from pyqnt.quant import portfolio
+from pyqnt.data import history
 
 app = FastAPI()
 
