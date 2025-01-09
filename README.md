@@ -38,6 +38,11 @@ tsetmc:
   - "طلا"
   - "عیار"
   - "کساپا"
+
+crypto:
+  - BTCUSDT
+  - ETHUSDT
+  - ONEUSDT
 ```
 
 Run the CLI app:
