@@ -1,7 +1,6 @@
 import click
 import yaml
 import requests
-import os
 
 API_URL = "http://127.0.0.1:8000/portfolio"
 
@@ -25,8 +24,22 @@ def optimize(file, method, risk_free_rate, budget):
         with open(file, 'r', encoding='utf-8') as f:
             symbols_data = yaml.safe_load(f)
 
-        if not symbols_data or "tsetmc" not in symbols_data or not isinstance(symbols_data["tsetmc"], list):
-            click.echo("Error: Invalid YAML format. Expected a 'tsetmc' key with a list of symbols.", err=True)
+        # Validate the YAML structure
+        if not symbols_data or not isinstance(symbols_data, dict):
+            click.echo("Error: Invalid YAML format. Expected a dictionary with 'tse' and/or 'crypto' keys.", err=True)
+            return
+
+        # Ensure at least one of 'tse' or 'crypto' is present
+        if "tse" not in symbols_data and "crypto" not in symbols_data:
+            click.echo("Error: YAML file must contain at least one of 'tse' or 'crypto' keys.", err=True)
+            return
+
+        # Validate that 'tse' and 'crypto' are lists (if they exist)
+        if "tse" in symbols_data and not isinstance(symbols_data["tse"], list):
+            click.echo("Error: 'tse' must be a list of symbols.", err=True)
+            return
+        if "crypto" in symbols_data and not isinstance(symbols_data["crypto"], list):
+            click.echo("Error: 'crypto' must be a list of symbols.", err=True)
             return
 
     except Exception as e:
@@ -42,8 +55,9 @@ def optimize(file, method, risk_free_rate, budget):
     }
 
     try:
+        # Send request to the API
         response = requests.post(API_URL, json=payload)
-        response.raise_for_status()
+        response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
         data = response.json()
 
         # Display results

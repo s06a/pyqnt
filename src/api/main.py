@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pyqnt.quant import portfolio
-from pyqnt.data import history
+from pyqnt.data import fetch_historical_data
 
 app = FastAPI()
 
@@ -15,7 +15,7 @@ class PortfolioRequest(BaseModel):
 def compute_portfolio(request: PortfolioRequest):
     try:
         # Fetch historical data
-        data = history(symbols=request.symbols)
+        data = fetch_historical_data(symbols=request.symbols)
         
         if data.empty:
             raise HTTPException(status_code=400, detail="No data returned for the provided symbols.")
