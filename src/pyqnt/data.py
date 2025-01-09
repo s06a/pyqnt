@@ -13,7 +13,7 @@ def fetch_historical_data(symbols: dict, exchange_id: str = 'binance', timeframe
     Parameters:
     ----------
     symbols : dict
-        A dictionary containing lists of symbols under the keys 'tsetmc' and/or 'crypto'.
+        A dictionary containing lists of symbols under the keys 'tse' and/or 'crypto'.
     exchange_id : str, optional
         The ID of the cryptocurrency exchange to use for fetching crypto data (default: 'binance').
     timeframe : str, optional
@@ -27,9 +27,9 @@ def fetch_historical_data(symbols: dict, exchange_id: str = 'binance', timeframe
     dfs = []
 
     # Fetch TSE data without proxy
-    if 'tsetmc' in symbols and symbols['tsetmc']:
-        tickers = tse.download(symbols=symbols['tsetmc'], adjust=True)
-        for ticker in symbols['tsetmc']:
+    if 'tse' in symbols and symbols['tse']:
+        tickers = tse.download(symbols=symbols['tse'], adjust=True)
+        for ticker in symbols['tse']:
             temp = tickers[ticker][['date', 'close', 'adjClose', 'yesterday']].copy()
             temp.rename(columns={'close': ticker}, inplace=True)
             temp.set_index('date', inplace=True)

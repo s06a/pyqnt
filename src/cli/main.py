@@ -26,17 +26,17 @@ def optimize(file, method, risk_free_rate, budget):
 
         # Validate the YAML structure
         if not symbols_data or not isinstance(symbols_data, dict):
-            click.echo("Error: Invalid YAML format. Expected a dictionary with 'tsetmc' and/or 'crypto' keys.", err=True)
+            click.echo("Error: Invalid YAML format. Expected a dictionary with 'tse' and/or 'crypto' keys.", err=True)
             return
 
-        # Ensure at least one of 'tsetmc' or 'crypto' is present
-        if "tsetmc" not in symbols_data and "crypto" not in symbols_data:
-            click.echo("Error: YAML file must contain at least one of 'tsetmc' or 'crypto' keys.", err=True)
+        # Ensure at least one of 'tse' or 'crypto' is present
+        if "tse" not in symbols_data and "crypto" not in symbols_data:
+            click.echo("Error: YAML file must contain at least one of 'tse' or 'crypto' keys.", err=True)
             return
 
-        # Validate that 'tsetmc' and 'crypto' are lists (if they exist)
-        if "tsetmc" in symbols_data and not isinstance(symbols_data["tsetmc"], list):
-            click.echo("Error: 'tsetmc' must be a list of symbols.", err=True)
+        # Validate that 'tse' and 'crypto' are lists (if they exist)
+        if "tse" in symbols_data and not isinstance(symbols_data["tse"], list):
+            click.echo("Error: 'tse' must be a list of symbols.", err=True)
             return
         if "crypto" in symbols_data and not isinstance(symbols_data["crypto"], list):
             click.echo("Error: 'crypto' must be a list of symbols.", err=True)

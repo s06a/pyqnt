@@ -32,7 +32,7 @@ pip install --user . # to install cli app
 
 Create a portfolio YAML file (portfolio.yml):
 ```yml
-tsetmc:
+tse:
   - "وبصادر"
   - "فولاد"
   - "طلا"
