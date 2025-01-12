@@ -57,11 +57,11 @@ def fetch_historical_data(symbols: dict, exchange_id: str = 'binance', timeframe
         for symbol in symbols['crypto']:
             try:
                 all_ohlcv = []
-                since = None
+                since = 0
 
                 while True:
-                    ohlcv = exchange.fetch_ohlcv(symbol, timeframe=timeframe, since=since)
-                    if not ohlcv:
+                    ohlcv = exchange.fetch_ohlcv(symbol, timeframe=timeframe, since=since, limit=1000)
+                    if len(ohlcv)==0:
                         break
                     all_ohlcv.extend(ohlcv)
                     since = ohlcv[-1][0] + 1
@@ -86,6 +86,7 @@ def fetch_historical_data(symbols: dict, exchange_id: str = 'binance', timeframe
 
 if __name__ == "__main__":
     symbols = {
+        "tse": ["وبصادر", "فولاد", "طلا"],
         "crypto": ["BTC/USDT", "ETH/USDT"]
     }
 
