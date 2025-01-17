@@ -2,7 +2,7 @@ import click
 import yaml
 import requests
 
-API_URL = "http://127.0.0.1:8000/portfolio"
+API_URL = "http://127.0.0.1:8000/optimize-portfolio"
 
 @click.group()
 def pyqnt():
@@ -17,6 +17,7 @@ def pyqnt():
 def optimize(file, method, risk_free_rate, budget):
     """
     Optimize a portfolio using the specified method and input symbols from a YAML file.
+    Only close prices are used for optimization.
     """
 
     # Load symbols from YAML file
