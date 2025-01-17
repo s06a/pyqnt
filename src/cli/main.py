@@ -1,8 +1,83 @@
 import click
 import yaml
 import requests
+import asyncio
+import pandas as pd
+from pyqnt.data import MarketDataFetcher
+from pyqnt.quant import portfolio
 
-API_URL = "http://127.0.0.1:8000/portfolio"
+API_URL = "http://127.0.0.1:8000/optimize-portfolio"
+HEALTH_CHECK_URL = "http://127.0.0.1:8000/health"  # Add a health check endpoint to your API
+
+def is_api_up():
+    """
+    Check if the API is up by sending a health check request.
+
+    Returns:
+    ----------
+    bool
+        True if the API is up, False otherwise.
+    """
+    try:
+        response = requests.get(HEALTH_CHECK_URL, timeout=5)
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+async def fetch_data(symbols):
+    """
+    Fetch OHLCV data for the provided symbols using MarketDataFetcher.
+
+    Parameters:
+    ----------
+    symbols : dict
+        A dictionary containing lists of symbols under the keys 'tse' and/or 'crypto'.
+
+    Returns:
+    ----------
+    dict
+        A dictionary containing DataFrames with OHLCV data for each symbol.
+    """
+    fetcher = MarketDataFetcher(exchange_id='binance', timeframe='1d', proxy_url='socks5://localhost:10808')
+    return await fetcher.fetch_all_data(symbols)
+
+def optimize_portfolio_locally(symbols, risk_free_rate, method, budget):
+    """
+    Optimize the portfolio locally without using the API.
+    Uses only close prices for optimization, matching the API logic.
+
+    Parameters:
+    ----------
+    symbols : dict
+        A dictionary containing lists of symbols under the keys 'tse' and/or 'crypto'.
+    risk_free_rate : float
+        The annual risk-free rate.
+    method : str
+        The optimization method: 'gmv' (Global Minimum Variance) or 'msr' (Maximum Sharpe Ratio).
+    budget : float
+        The total budget allocation for the portfolio.
+
+    Returns:
+    ----------
+    dict
+        A dictionary containing the optimized portfolio weights.
+    """
+    # Fetch data asynchronously
+    data = asyncio.run(fetch_data(symbols))
+
+    # Extract close prices from the fetched data
+    close_prices = pd.DataFrame({symbol: df['close'] for symbol, df in data.items()})
+
+    # Compute portfolio using only close prices
+    result = portfolio(
+        close_prices, 
+        risk_free_rate=risk_free_rate, 
+        method=method, 
+        budget=budget
+    )
+
+    # Convert the result to a dictionary
+    return {"portfolio": result.to_dict(orient="records")}
 
 @click.group()
 def pyqnt():
@@ -17,8 +92,9 @@ def pyqnt():
 def optimize(file, method, risk_free_rate, budget):
     """
     Optimize a portfolio using the specified method and input symbols from a YAML file.
+    If the API is up, it will use the API; otherwise, it will compute the portfolio locally.
+    Only close prices are used for optimization.
     """
-
     # Load symbols from YAML file
     try:
         with open(file, 'r', encoding='utf-8') as f:
@@ -46,7 +122,7 @@ def optimize(file, method, risk_free_rate, budget):
         click.echo(f"Error reading YAML file: {e}", err=True)
         return
 
-    # Prepare API request payload
+    # Prepare payload
     payload = {
         "symbols": symbols_data,
         "risk_free_rate": risk_free_rate,
@@ -54,21 +130,27 @@ def optimize(file, method, risk_free_rate, budget):
         "budget": budget
     }
 
-    try:
-        # Send request to the API
-        response = requests.post(API_URL, json=payload)
-        response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
-        data = response.json()
+    # Check if the API is up
+    if is_api_up():
+        click.echo("API is up. Using API for portfolio optimization...")
+        try:
+            # Send request to the API
+            response = requests.post(API_URL, json=payload)
+            response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
+            data = response.json()
+        except requests.exceptions.RequestException as e:
+            click.echo(f"Error: Unable to connect to API. Falling back to local computation. {e}", err=True)
+            data = optimize_portfolio_locally(**payload)
+    else:
+        click.echo("API is down. Falling back to local computation...")
+        data = optimize_portfolio_locally(**payload)
 
-        # Display results
-        click.echo("\nOptimized Portfolio Weights:")
-        for item in data.get("portfolio", []):
-            click.echo(f"Ticker: {item['ticker']}, Weight: {item['weight']:.2f}")
-            if "amount" in item:
-                click.echo(f"  Amount: {item['amount']:.2f}")
-
-    except requests.exceptions.RequestException as e:
-        click.echo(f"Error: Unable to connect to API. {e}", err=True)
+    # Display results
+    click.echo("\nOptimized Portfolio Weights:")
+    for item in data.get("portfolio", []):
+        click.echo(f"Ticker: {item['ticker']}, Weight: {item['weight']:.2f}")
+        if "amount" in item:
+            click.echo(f"  Amount: {item['amount']:.2f}")
 
 if __name__ == "__main__":
     pyqnt()
