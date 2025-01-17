@@ -35,7 +35,7 @@ def portfolio(data, risk_free_rate=0.2, method='gmv', budget=0):
     DataFrame of optimized weights and name of tickers.
     """
     # data preparation
-    returns = data.pct_change()
+    returns = data.pct_change(fill_method=None)
     covariance_matrix = returns.cov()
     mean_returns = returns.mean()
     num_assets = len(mean_returns)
