@@ -167,5 +167,4 @@ cython_debug/
 #.idea/
 
 # test files and folders
-src/cli/.symbols.yml
-.test
+.*
