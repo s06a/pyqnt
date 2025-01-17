@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install --no-cache-dir ".[full]"
+RUN pip install --no-cache-dir .
 
 ENV PYTHONPATH=/app/src
 
