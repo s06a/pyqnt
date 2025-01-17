@@ -42,6 +42,13 @@ async def optimize_portfolio(request: PortfolioRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint to verify that the service is running.
+    """
+    return {"status": "healthy"}
+
 def run_server(host: str = "127.0.0.1", port: int = 8000):
     """
     Run the FastAPI server.
