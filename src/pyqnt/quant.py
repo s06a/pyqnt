@@ -1,7 +1,6 @@
 from scipy.optimize import minimize
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 def annual_rets(weights, mean_returns):
     """
