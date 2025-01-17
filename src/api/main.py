@@ -4,7 +4,6 @@ from pyqnt.quant import portfolio
 from pyqnt.data import MarketDataFetcher  # Import the new class
 import uvicorn
 import os
-import asyncio
 import pandas as pd
 
 app = FastAPI()
