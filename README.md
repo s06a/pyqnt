@@ -48,11 +48,10 @@ Create a Portfolio YAML File (`portfolio.yml`)
 
 ```yml
 tse:
-  - "وبصادر"
-  - "فولاد"
-  - "طلا"
-  - "عیار"
-  - "کساپا"
+  - وبصادر
+  - فولاد
+  - طلا
+  - عیار
 
 crypto:
   - BTCUSDT
